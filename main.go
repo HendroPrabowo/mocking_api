@@ -27,13 +27,7 @@ func main() {
 	})
 	r.Use(httplog.RequestLogger(logger))
 
-	// REGISTER ALL ROUTES HERE
-	// health check routes
-	health.RegisterRoutes(r)
-
-	// dukcapil routes
-	dukcapilRoutes, _ := dukcapil.InitializeDukcapil()
-	dukcapilRoutes.RegisterRoutes(r)
+	registerRoutes(r)
 
 	log.Info("Running on port : " + port)
 	http.ListenAndServe(":"+port, r)
@@ -58,4 +52,15 @@ func setCors(r *chi.Mux) *chi.Mux {
 
 func init() {
 	log.SetFormatter(&log.JSONFormatter{})
+}
+
+func registerRoutes(r *chi.Mux) {
+	// REGISTER ALL ROUTES HERE
+	// health check routes
+	healthRoutes, _ := health.InitializeHealthCheck()
+	healthRoutes.RegisterRoutes(r)
+
+	// dukcapil routes
+	dukcapilRoutes, _ := dukcapil.InitializeDukcapil()
+	dukcapilRoutes.RegisterRoutes(r)
 }
