@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/go-chi/httplog"
 	"net/http"
 	"os"
 
@@ -10,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+	"github.com/go-chi/httplog"
 	log "github.com/sirupsen/logrus"
 )
 
