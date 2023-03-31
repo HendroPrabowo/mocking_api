@@ -2,16 +2,18 @@ package health
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/hellofresh/health-go/v5"
 )
 
 var APP_NAME = "mocking_api"
 
-func RegisterRoutes(r *chi.Mux) {
-	h, _ := health.New(health.WithComponent(health.Component{
-		Name:    APP_NAME,
-		Version: "v1.0",
-	}))
+type routes struct {
+	controller controller
+}
 
-	r.Get("/status", h.HandlerFunc)
+func newRoutes(controller controller) routes {
+	return routes{controller: controller}
+}
+
+func (routes routes) RegisterRoutes(r *chi.Mux) {
+	r.Get("/status", routes.controller.HealthCheck())
 }
