@@ -1,8 +1,6 @@
 FROM golang:1.17
 WORKDIR /app
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
 COPY . .
-RUN go build -o ./out/dist .
-CMD ./out/dist
+RUN go mod tidy
+RUN go build -o ./mocking_api .
+CMD ./mocking_api
