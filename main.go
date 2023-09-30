@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"mocking_api/dukcapil"
+	"mocking_api/cms"
 	"mocking_api/health"
 
 	"github.com/go-chi/chi"
@@ -71,9 +71,10 @@ func registerRoutes() *chi.Mux {
 	// health check routes
 	health.RegisterRoutes(r)
 
-	// dukcapil routes
-	dukcapilRoutes, _ := dukcapil.InitializeDukcapil()
-	dukcapilRoutes.RegisterRoutes(r)
+	// cms
+	cmsRoutes := cms.InitializeCms()
+	cmsRoutes.RegisterRoutes(r)
+	cmsRoutes.RegisterServiceRoutes(r)
 
 	return r
 }

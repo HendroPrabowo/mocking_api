@@ -2,8 +2,11 @@ package response
 
 import (
 	"encoding/json"
-	log "github.com/sirupsen/logrus"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
+
+	"mocking_api/utility/wraped_error"
 )
 
 func Ok(w http.ResponseWriter, resp interface{}) {
@@ -12,10 +15,24 @@ func Ok(w http.ResponseWriter, resp interface{}) {
 	writeResponse(w, resp)
 }
 
-func Error(w http.ResponseWriter, status int, resp interface{}) {
+func OkWithMessage(w http.ResponseWriter, resp interface{}) {
+	mapResp := map[string]interface{}{"message": resp}
+	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	writeResponse(w, mapResp)
+}
+
+func Custom(w http.ResponseWriter, status int, resp interface{}) {
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(status)
 	writeResponse(w, resp)
+}
+
+func ErrorWrapped(w http.ResponseWriter, err *wraped_error.Error) {
+	mapResp := map[string]interface{}{"message": err.Err.Error()}
+	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(err.StatusCode)
+	writeResponse(w, mapResp)
 }
 
 func writeResponse(w http.ResponseWriter, resp interface{}) {
