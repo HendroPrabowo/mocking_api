@@ -14,4 +14,5 @@ func RegisterRoutes(r *chi.Mux) {
 	}))
 
 	r.Get("/status", h.HandlerFunc)
+	r.Get("/", h.HandlerFunc)
 }

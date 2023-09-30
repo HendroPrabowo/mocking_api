@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"mocking_api/dukcapil"
+	"mocking_api/cms"
 	"mocking_api/health"
 
 	"github.com/go-chi/chi"
@@ -19,6 +23,42 @@ func main() {
 		port = "8080"
 	}
 
+	r := registerRoutes()
+
+	srv := &http.Server{
+		Addr:    ":" + port,
+		Handler: r,
+	}
+
+	// Create a channel to receive signals
+	signalCh := make(chan os.Signal, 1)
+	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM)
+
+	// Start the server in a separate goroutine
+	go func() {
+		log.Printf("server listening on port %s", srv.Addr)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	// Wait for a signal to shutdown the server
+	sig := <-signalCh
+	log.Println("received signal: %v", sig)
+
+	// Create a context with a timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Shutdown the server gracefully
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("server shutdown failed: %v\n", err)
+	}
+
+	log.Println("server shutdown gracefully")
+}
+
+func registerRoutes() *chi.Mux {
 	r := chi.NewRouter()
 	r = setCors(r)
 
@@ -31,12 +71,12 @@ func main() {
 	// health check routes
 	health.RegisterRoutes(r)
 
-	// dukcapil routes
-	dukcapilRoutes, _ := dukcapil.InitializeDukcapil()
-	dukcapilRoutes.RegisterRoutes(r)
+	// cms
+	cmsRoutes := cms.InitializeCms()
+	cmsRoutes.RegisterRoutes(r)
+	cmsRoutes.RegisterServiceRoutes(r)
 
-	log.Info("Running on port : " + port)
-	http.ListenAndServe(":"+port, r)
+	return r
 }
 
 func setCors(r *chi.Mux) *chi.Mux {
