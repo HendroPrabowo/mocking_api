@@ -1,5 +1,11 @@
 package cms
 
+type MockResponseDto struct {
+	Mock         []MockDto `json:"mock"`
+	Page         int       `json:"page"`
+	TotalElement int       `json:"total_element"`
+}
+
 type MockDto struct {
 	Id           int         `json:"id"`
 	Name         string      `json:"name" validate:"required"`
