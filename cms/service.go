@@ -69,19 +69,26 @@ func (svc service) proceedUpdateMock(dto MockDto) *wraped_error.Error {
 	return nil
 }
 
-func (svc service) proceedGetMock(queryParam MockQueryDto) (mocksDto []MockDto, errWrap *wraped_error.Error) {
+func (svc service) proceedGetMock(queryParam MockQueryDto) (mockResponseDto MockResponseDto, errWrap *wraped_error.Error) {
 	mocksEntity, err := svc.repository.get(queryParam)
 	if err != nil {
-		return mocksDto, wraped_error.WrapError(err, http.StatusInternalServerError)
+		return mockResponseDto, wraped_error.WrapError(err, http.StatusInternalServerError)
 	}
-	mocksDto = []MockDto{}
+	totalElement, err := svc.repository.count(queryParam)
+	if err != nil {
+		return mockResponseDto, wraped_error.WrapError(err, http.StatusInternalServerError)
+	}
+	mocksDto := []MockDto{}
 	for _, mock := range mocksEntity {
 		var dtoMock MockDto
 		copier.Copy(&dtoMock, &mock)
 		mocksDto = append(mocksDto, dtoMock)
 	}
 
-	return mocksDto, nil
+	mockResponseDto.Mock = mocksDto
+	mockResponseDto.Page = queryParam.Page
+	mockResponseDto.TotalElement = totalElement
+	return mockResponseDto, nil
 }
 
 func (svc service) proceedHandleMock(method string, path string) (mockDto MockDto, errWrap *wraped_error.Error) {

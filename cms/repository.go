@@ -37,6 +37,26 @@ func (r repository) get(queryParam MockQueryDto) ([]Mock, error) {
 	return mocks, err
 }
 
+func (r repository) count(queryParam MockQueryDto) (int, error) {
+	var mocks []Mock
+	offset := queryParam.Page * queryParam.Limit
+	query := r.postgres.Model(&mocks).Limit(queryParam.Limit).Offset(offset)
+	if queryParam.Name != "" {
+		query.Where("name ilike ?", queryParam.Name+"%")
+	}
+	if queryParam.Method != "" {
+		query.Where("method ilike ?", queryParam.Method+"%")
+	}
+	if queryParam.Path != "" {
+		query.Where("path ilike ?", queryParam.Path+"%")
+	}
+	if queryParam.ResponseCode != 0 {
+		query.Where("response_code = ?", queryParam.ResponseCode)
+	}
+	count, err := query.Count()
+	return count, err
+}
+
 func (r repository) getOneByMethodAndPath(method string, path string) (Mock, error) {
 	var mock Mock
 	err := r.postgres.Model(&mock).Where("method = ?", method).Where("path = ?", path).Limit(1).Select()

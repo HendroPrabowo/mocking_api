@@ -31,13 +31,13 @@ func (c controller) GetMock(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mocksDto, err := c.service.proceedGetMock(queryParam)
+	mockResponseDto, err := c.service.proceedGetMock(queryParam)
 	if err != nil {
 		response.ErrorWrapped(w, err)
 		return
 	}
 
-	response.Ok(w, mocksDto)
+	response.Ok(w, mockResponseDto)
 }
 
 func (c controller) buildLoanParameter(r *http.Request) (queryParam MockQueryDto, wrappedError *wraped_error.Error) {
