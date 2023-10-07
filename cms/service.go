@@ -69,6 +69,13 @@ func (svc service) proceedUpdateMock(dto MockDto) *wraped_error.Error {
 	return nil
 }
 
+func (svc service) proceedDeleteMock(id int) *wraped_error.Error {
+	if err := svc.repository.delete(id); err != nil {
+		return wraped_error.WrapError(err, http.StatusInternalServerError)
+	}
+	return nil
+}
+
 func (svc service) proceedGetMock(queryParam MockQueryDto) (mockResponseDto MockResponseDto, errWrap *wraped_error.Error) {
 	mocksEntity, err := svc.repository.get(queryParam)
 	if err != nil {

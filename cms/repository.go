@@ -67,3 +67,8 @@ func (r repository) update(mock Mock) error {
 	_, err := r.postgres.Model(&mock).Column("name", "method", "path", "response_code", "request", "response", "updated_at").WherePK().Update()
 	return err
 }
+
+func (r repository) delete(id int) error {
+	_, err := r.postgres.Model((*Mock)(nil)).Where("id = ?", id).Delete()
+	return err
+}
