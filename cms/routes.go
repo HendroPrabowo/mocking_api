@@ -17,6 +17,7 @@ func (routes routes) RegisterRoutes(r *chi.Mux) {
 		r.Get("/", routes.controller.GetMock)
 		r.Post("/", routes.controller.AddMock)
 		r.Put("/", routes.controller.UpdateMock)
+		r.Delete("/", routes.controller.DeleteMock)
 	})
 }
 

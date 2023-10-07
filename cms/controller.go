@@ -115,6 +115,21 @@ func (c controller) UpdateMock(w http.ResponseWriter, r *http.Request) {
 	response.OkWithMessage(w, "ok")
 }
 
+func (c controller) DeleteMock(w http.ResponseWriter, r *http.Request) {
+	idParam := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		response.ErrorWrapped(w, wraped_error.WrapError(err, http.StatusBadRequest))
+		return
+	}
+
+	if err := c.service.proceedDeleteMock(id); err != nil {
+		response.ErrorWrapped(w, err)
+		return
+	}
+	response.OkWithMessage(w, "success")
+}
+
 func (c controller) HandleMock(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	method := strings.ToUpper(r.Method)
