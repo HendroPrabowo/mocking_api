@@ -53,7 +53,7 @@ func (c controller) buildLoanParameter(r *http.Request) (queryParam MockQueryDto
 	}
 
 	if limit == "" {
-		limit = "25"
+		limit = "10"
 	}
 
 	pageInt, err := strconv.Atoi(page)
