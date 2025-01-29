@@ -10,7 +10,8 @@ DELETE /api/v1/mock
 
 ## RUNNING DOCKER COMPOSE
 ```  
-docker-compose up -d docker ps 
+docker-compose up -d 
+docker ps 
 ```  
   
 ## RUNNING IMAGES TO CONTAINER  
