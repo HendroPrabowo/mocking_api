@@ -1,4 +1,5 @@
-//+build wireinject
+//go:build wireinject
+// +build wireinject
 
 package cms
 
@@ -14,7 +15,7 @@ func InitializeCms() routes {
 		newController,
 		newService,
 		newRepository,
-		database.InitPostgreOrm,
+		database.InitSqlite,
 	)
 	return routes{}
 }

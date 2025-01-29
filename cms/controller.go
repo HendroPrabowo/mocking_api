@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-pg/pg/v10"
 	log "github.com/sirupsen/logrus"
 
 	"mocking_api/utility/response"
@@ -136,10 +135,6 @@ func (c controller) HandleMock(w http.ResponseWriter, r *http.Request) {
 	log.Infof("%s : %s", method, path)
 	mock, err := c.service.proceedHandleMock(method, path)
 	if err != nil {
-		if err.Err == pg.ErrNoRows {
-			response.ErrorWrapped(w, wraped_error.WrapError(fmt.Errorf("mock not found"), http.StatusNotFound))
-			return
-		}
 		response.ErrorWrapped(w, err)
 		return
 	}

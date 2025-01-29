@@ -1,5 +1,10 @@
 package cms
 
+import (
+	"encoding/json"
+	log "github.com/sirupsen/logrus"
+)
+
 type MockResponseDto struct {
 	Mock         []MockDto `json:"mock"`
 	Page         int       `json:"page"`
@@ -7,13 +12,32 @@ type MockResponseDto struct {
 }
 
 type MockDto struct {
-	Id           int         `json:"id"`
-	Name         string      `json:"name" validate:"required"`
-	Method       string      `json:"method" validate:"required"`
-	Path         string      `json:"path" validate:"required"`
-	ResponseCode int         `json:"response_code" validate:"required"`
-	Request      interface{} `json:"request"`
-	Response     interface{} `json:"response" validate:"required"`
+	Id           uint                   `json:"id"`
+	Name         string                 `json:"name" validate:"required"`
+	Method       string                 `json:"method" validate:"required"`
+	Path         string                 `json:"path" validate:"required"`
+	ResponseCode int                    `json:"response_code" validate:"required"`
+	Request      map[string]interface{} `json:"request"`
+	Response     map[string]interface{} `json:"response" validate:"required"`
+}
+
+func (dto *MockDto) fromEntity(mock Mock) {
+	dto.Id = mock.ID
+	dto.Name = mock.Name
+	dto.Method = mock.Method
+	dto.Path = mock.Path
+	dto.ResponseCode = mock.ResponseCode
+	if mock.Request != "" {
+		if err := json.Unmarshal([]byte(mock.Request), &dto.Request); err != nil {
+			log.Warning("failed to unmarshal mock request")
+		}
+	}
+
+	if mock.Response != "" {
+		if err := json.Unmarshal([]byte(mock.Response), &dto.Response); err != nil {
+			log.Warning("failed to unmarshal mock response")
+		}
+	}
 }
 
 type MockQueryDto struct {

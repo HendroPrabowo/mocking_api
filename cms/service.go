@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"mocking_api/utility/time_now"
 	"mocking_api/utility/wraped_error"
 
 	"github.com/go-playground/validator/v10"
@@ -28,7 +27,7 @@ func (svc service) proceedAddMock(dto MockDto) *wraped_error.Error {
 	}
 
 	entity := Mock{}
-	copier.Copy(&entity, &dto)
+	entity.fromDto(dto)
 
 	if err := svc.repository.insert(entity); err != nil {
 		return wraped_error.WrapError(err, http.StatusInternalServerError)
@@ -42,7 +41,7 @@ func (svc service) validateMockDto(dto MockDto) error {
 	if err := validate.Struct(dto); err != nil {
 		return err
 	}
-	if dto.Response == "" {
+	if dto.Response == nil {
 		return fmt.Errorf("response cannot empty string")
 	}
 	dto.Method = strings.ToUpper(dto.Method)
@@ -59,8 +58,7 @@ func (svc service) proceedUpdateMock(dto MockDto) *wraped_error.Error {
 	}
 
 	entity := Mock{}
-	copier.Copy(&entity, &dto)
-	entity.UpdatedAt = time_now.Wib().Format("2006-01-02 15:04:05")
+	entity.fromDto(dto)
 
 	if err := svc.repository.update(entity); err != nil {
 		return wraped_error.WrapError(err, http.StatusInternalServerError)
@@ -103,6 +101,6 @@ func (svc service) proceedHandleMock(method string, path string) (mockDto MockDt
 	if err != nil {
 		return MockDto{}, wraped_error.WrapError(err, http.StatusInternalServerError)
 	}
-	copier.Copy(&mockDto, &mockEntity)
+	mockDto.fromEntity(mockEntity)
 	return mockDto, nil
 }

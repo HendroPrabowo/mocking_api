@@ -13,7 +13,7 @@ import (
 // Injectors from wire.go:
 
 func InitializeCms() routes {
-	db := database.InitPostgreOrm()
+	db := database.InitSqlite()
 	cmsRepository := newRepository(db)
 	cmsService := newService(cmsRepository)
 	cmsController := newController(cmsService)
