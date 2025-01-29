@@ -44,7 +44,7 @@ func main() {
 
 	// Wait for a signal to shutdown the server
 	sig := <-signalCh
-	log.Println("received signal: %v", sig)
+	log.Printf("received signal: %v", sig)
 
 	// Create a context with a timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)

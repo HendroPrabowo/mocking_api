@@ -23,11 +23,11 @@ func InitPostgreOrm() *pg.DB {
 	}
 
 	log.Info("POSTGRES : create new instance")
-	host := os.Getenv("DATABASE_HOST")
-	port := os.Getenv("DATABASE_PORT")
-	user := os.Getenv("DATABASE_USER")
-	password := os.Getenv("DATABASE_PASSWORD")
-	database := os.Getenv("DATABASE_NAME")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	database := os.Getenv("DB_NAME")
 
 	if host == "" || port == "" || user == "" || password == "" || database == "" {
 		log.Info("POSTGRES : config from localhost")
