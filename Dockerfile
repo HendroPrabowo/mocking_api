@@ -2,11 +2,22 @@
 FROM golang:1.21 AS builder
 WORKDIR /app
 COPY . .
-RUN go mod tidy
-RUN go build -o mocking_api .
 
-# Stage 2: Create a container
-FROM golang:1.21
+# Download dependencies
+RUN go mod tidy
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -o simple_api .
+
+# Stage 2: Create a lightweight container
+FROM alpine:latest
 WORKDIR /app/
-COPY --from=builder /app/mocking_api /app/
-CMD ["./mocking_api"]
+
+# Copy the binary from the builder stage
+COPY --from=builder /app/simple_api /app/
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Run the application
+CMD ["./simple_api"]
