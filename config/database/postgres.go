@@ -46,7 +46,7 @@ func InitPostgreOrm() *pg.DB {
 	}
 
 	var err error
-	pgConnectionString := os.Getenv("DATABASE_CONNECTION_STRING")
+	pgConnectionString := os.Getenv("DATABASE_URL")
 	if pgConnectionString != "" {
 		log.Infof("POSTGRES : connect using connection string url")
 		opt, err = pg.ParseURL(pgConnectionString)
